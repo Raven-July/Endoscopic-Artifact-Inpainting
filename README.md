@@ -27,13 +27,13 @@ The full train and inference code are coming soon...
 
 ### 1.1 Abstract
 
-Endoscopic imaging plays a crucial role in modern diagnostics and minimally invasive procedures. However, specular and diffuse reflections present significant challenges to downstream tasks such as segmentation.
+Endoscopic imaging plays a crucial role in modern diagnostics and minimally invasive procedures. However, Artifacts caused by specular and diffuse reflections present significant challenges to downstream tasks such as segmentation.
 In this work, we propose a **two-stage artifact inpainting framework** that:
 
-1. **Suppresses specular reflections** via a DUCKNet + LaMa pipeline.
-2. **Refines diffuse reflections** using StableDelight with an adaptive weight-map guided fusion.
+1. **Suppresses Specular Artifact** via a DUCKNet(Trained from scratch) + LaMa pipeline.
+2. **Refines Diffuse Artifact** using StableDelight with an adaptive weight-map guided fusion.
 
-Extensive experiments on colonoscopy and dental endoscopy datasets show that our method significantly improves segmentation accuracy (mDice ↑ from 51.5% to 96.1% for zero-shot SAM segmentation).
+Extensive experiments on colonoscopy and dental endoscopy datasets show that our method significantly improves segmentation accuracy (mDice ↑ from 51.5% to 96.1% for zero-shot when SAM segmentation using point prompt).
 
 <p align="center">
 <img src="assets/Overview.png" width="1000"><br>
@@ -50,26 +50,33 @@ This repository is developed with **Python 3.10.16**.
 Create a virtual environment and install dependencies:
 
 ```bash
-python3 -m venv ~/inpainting-env
-source ~/inpainting-env/bin/activate
-pip install -r requirements.txt
+# clone repository
+git clone git@github.com:Raven-July/Endoscopic-Artifact-Inpainting.git
+cd Endoscopic-Artifact-Inpainting
+# create conda environment
+conda create -n Artifact python==3.10
+conda activate Artifact
+# install dependencies
+pip install uv
+uv pip install -r requirements.txt
 ```
 
 ⚠️ *Note:* We have not yet tested on other Python versions or operating systems.
 
-### 2.2 Pretrained Models
+### 2.2 Models
 
 1. **DUCKNet Model**
-   Place `Duck16mod_Spec_99_new.pt` into the `pretrained_models/` folder.
+   * Download from [GoogleDrive](https://drive.google.com/file/d/1um3VlzU1f5ynaiTFrAxtpIl5LgFfKrz2/view?usp=sharing)
+   * Place `Duck16mod_Spec_99_new.pt` into `./weights` folder.
 
-2. **Big-LaMa Model**
-   Download and place the Big-LaMa model folder into `pretrained_models/`.
+2. **Pretrained Big-LaMa Model**
+   * Download from [GoogleDrive](https://drive.google.com/drive/folders/1B2x7eQDgecTL0oh3LSIBDGj0fTxs6Ips?usp=sharing)
+   * Unzip and place the `big-lama` **folder** into `./weights` folder. 
 
-3. **StableDelight Model**
+3. **Pretrained StableDelight Model**
 
    * Download from [HuggingFace](https://huggingface.co/Stable-X/yoso-delight-v0-4-base/tree/main)
-   * Or download from provided cloud storage (link to be added).
-   * Set the model path in `process.sh` by modifying the `sd_path` parameter.
+   * Place the `yoso-delight-v0-4-base` **folder** into `./weights` folder.
 
 ---
 
@@ -90,34 +97,23 @@ This will run the full two-stage artifact removal pipeline.
 | Parameter          | Description                                                                                                                                                               | Default |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `lama_dilate_size` | Controls the dilation kernel size applied to the DUCKNet specular mask before passing to Big-LaMa. Larger values remove more highlights but risk over-inpainting.         | 12      |
-| `mix_thresh`       | Threshold for fusing DuckNet+LaMa result with StableDelight output. Pixels above this brightness are considered diffuse highlights and blended with StableDelight output. | 190     |
+| `mix_thresh`       | Threshold for fusing DUCKNet+LaMa result with StableDelight output. Pixels above this brightness are considered diffuse highlights and blended with StableDelight output. | 190     |
 
 You can modify these parameters in `process.sh` before running the pipeline.
 
 ---
 
-## 4. Dataset Preparation
-
-We evaluate on **CVC-ClinicDB, Kvasir-SEG, CVC-ColonDB, ETIS** (polyp segmentation) and a curated **dental endoscopy dataset**.
-Please prepare datasets in the following structure:
-
-```
-data/
- ├── CVC-ClinicDB/
- │    ├── Original/
- │    └── Ground Truth/
- ├── Kvasir-SEG/
- │    ├── images/
- │    └── masks/
- └── Dental/
-      ├── images/
-      └── masks/
-```
-
+## 4. Training and Evaluation
+### Dataset Preparation
 Links to public datasets:
-
 * [CVC-ClinicDB](https://www.dropbox.com/s/p5qe9eotetjnbmq/CVC-ClinicDB.rar?dl=0)
 * [Kvasir-SEG](https://datasets.simula.no/kvasir-seg/)
+
+### Training
+Coming soon...
+
+### Evaluation
+Coming soon...
 
 ---
 
@@ -127,11 +123,7 @@ Links to public datasets:
 
 Our method achieves **state-of-the-art performance** in segmentation improvement.
 
-| Method         | Teeth (SAM, mDice) | Teeth (SAM, mIoU) |
-| -------------- | ------------------ | ----------------- |
-| Original Image | 51.5               | 39.3              |
-| StableDelight  | 91.4               | 85.6              |
-| Ours           | **96.1**           | **93.0**          |
+WIPWIPWIP
 
 <p align="center">
 <img src="assets/visual results.png" width="900"><br>
@@ -166,13 +158,16 @@ If you find this repository useful, please cite our paper:
 
 ## 7. License
 
-This repository is released under **MIT License** (or other license you choose). See [LICENSE](LICENSE) for details.
+This repository is released under **Apache-2.0 license**. See [LICENSE](LICENSE) for details.
 
 ---
 
 ## 8. Acknowledgements
 
-We thank the contributors of DUCKNet, LaMa, and StableDelight for releasing their models and codes.
+Our work builds upon valuable open-source contributions from [DUCKNet](https://github.com/dvlab-research/LISA/tree/main), [LaMa](https://github.com/advimman/lama), [StableDelight](https://github.com/Stable-X/StableDelight?tab=readme-ov-file), and [FCBFormer](https://github.com/ESandML/FCBFormer), whose efforts made this research possible.
+
+This work makes use of data from the **Restored** [CVC-ClinicSpecific](https://github.com/hmzawz2cbh/CVC-ClinicSpecific-restore?tab=readme-ov-file) dataset(Unofficial Version).
+
 This work was partially supported by \[add funding sources here].
 
 ---
