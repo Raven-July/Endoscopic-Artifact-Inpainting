@@ -1,10 +1,3 @@
-# Endoscopic-Artifact-Inpainting-for-Improved-Endoscopic-Image-Segmentation
-Inspired by the simplified Phong model for endoscopy, we propose a two-stage artifact inpainting framework. The first stage suppresses specular artifacts, while the second stage focuses on inpainting diffuse artifacts. Additionally, we introduce a weight map to control the handling of diffuse artifacts, ensuring a more precise enhancement.
-
-The full train and inference code are coming soon...
-
----
-
 <div align ="center">
 <h1>Endoscopic Artifact Inpainting for Improved Endoscopic Image Segmentation (MICCAI 2025 SpotLight)</h1>
 
@@ -28,6 +21,9 @@ The full train and inference code are coming soon...
 ### 1.1 Abstract
 
 Endoscopic imaging plays a crucial role in modern diagnostics and minimally invasive procedures. However, Artifacts caused by specular and diffuse reflections present significant challenges to downstream tasks such as segmentation.
+
+Inspired by the simplified Phong model for endoscopy, we propose a two-stage artifact inpainting framework. The first stage suppresses specular artifacts, while the second stage focuses on inpainting diffuse artifacts. Additionally, we introduce a weight map to control the handling of diffuse artifacts, ensuring a more precise enhancement.
+
 In this work, we propose a **two-stage artifact inpainting framework** that:
 
 1. **Suppresses Specular Artifact** via a DUCKNet(Trained from scratch) + LaMa pipeline.
@@ -90,14 +86,14 @@ Simply execute:
 sh process.sh
 ```
 
-This will run the full two-stage artifact removal pipeline.
+This will run the full two-stage artifact inpainting pipeline. Results will appear in `./outputs` folder.
 
 ### 3.2 Key Parameters
 
 | Parameter          | Description                                                                                                                                                               | Default |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `lama_dilate_size` | Controls the dilation kernel size applied to the DUCKNet specular mask before passing to Big-LaMa. Larger values remove more highlights but risk over-inpainting.         | 12      |
-| `mix_thresh`       | Threshold for fusing DUCKNet+LaMa result with StableDelight output. Pixels above this brightness are considered diffuse highlights and blended with StableDelight output. | 190     |
+| `lama_dilate_size` | Controls the dilation kernel size applied to the DUCKNet specular mask before passing to Big-LaMa. Larger values remove more highlights but risk over-inpainting.         | 15      |
+| `mix_thresh`       | Threshold for fusing DUCKNet+LaMa result with StableDelight output. Pixels above this brightness are considered diffuse highlights and blended with StableDelight output. | 150     |
 
 You can modify these parameters in `process.sh` before running the pipeline.
 
@@ -108,6 +104,12 @@ You can modify these parameters in `process.sh` before running the pipeline.
 Links to public datasets:
 * [CVC-ClinicDB](https://www.dropbox.com/s/p5qe9eotetjnbmq/CVC-ClinicDB.rar?dl=0)
 * [Kvasir-SEG](https://datasets.simula.no/kvasir-seg/)
+
+* [CVC-ColonDB](https://www.kaggle.com/datasets/longvil/cvc-colondb) 
+
+* [ETIS-LaribPolypDB](https://www.kaggle.com/datasets/mahmudulhasantasin/etis-laribpolypdb)
+
+* [CVC-ClinicSpecific](https://github.com/hmzawz2cbh/CVC-ClinicSpecific-restore?)
 
 ### Training
 Coming soon...
@@ -121,18 +123,21 @@ Coming soon...
 
 ### 5.1 Quantitative Results
 
-Our method achieves **state-of-the-art performance** in segmentation improvement.
+Our method achieves better artifact inpainting quality and robustly improve the segmentation performance of endoscopic images.
 
-WIPWIPWIP
+<p align="center">
+<img src="assets/results.png" width="900"><br>
+<em>Figure 2: Quantitative comparison for segmentation performance enhancement.</em>
+</p>
 
 <p align="center">
 <img src="assets/visual results.png" width="900"><br>
-<em>Figure 2: Visual comparison of artifact inpainting results.</em>
+<em>Figure 3: Visual comparison of artifact inpainting results.</em>
 </p>
 
 <p align="center">
 <img src="assets/seg results.png" width="900"><br>
-<em>Figure 3: egmentation result comparisons between our method and baselines.</em>
+<em>Figure 4: Segmentation result comparisons between our method and baselines.</em>
 </p>
 
 ---
@@ -168,6 +173,6 @@ Our work builds upon valuable open-source contributions from [DUCKNet](https://g
 
 This work makes use of data from the **Restored** [CVC-ClinicSpecific](https://github.com/hmzawz2cbh/CVC-ClinicSpecific-restore?tab=readme-ov-file) dataset(Unofficial Version).
 
-This work was partially supported by \[add funding sources here].
+This work was supported by Ningbo Fregty Optoelectronics Technology
 
 ---
