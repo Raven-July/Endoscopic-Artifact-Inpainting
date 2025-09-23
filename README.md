@@ -24,7 +24,7 @@ Endoscopic imaging plays a crucial role in modern diagnostics and minimally inva
 
 Inspired by the simplified Phong model for endoscopy, we propose a two-stage artifact inpainting framework. The first stage suppresses specular artifacts, while the second stage focuses on inpainting diffuse artifacts. Additionally, we introduce a weight map to control the handling of diffuse artifacts, ensuring a more precise enhancement.
 
-In this work, we propose a **two-stage artifact inpainting framework** that:
+The **two-stage artifact inpainting framework** is composed of:
 
 1. **Suppresses Specular Artifact** via a DUCKNet(Trained from scratch) + LaMa pipeline.
 2. **Refines Diffuse Artifact** using StableDelight with an adaptive weight-map guided fusion.
